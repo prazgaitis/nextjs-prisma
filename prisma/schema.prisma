@@ -10,9 +10,40 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Todo {
-  id        String   @id @default(uuid())
+model User {
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  text      String
-  completed Boolean
+  updatedAt DateTime @updatedAt
+}
+
+model Room {
+  id               String             @id @default(uuid())
+  createdAt        DateTime           @default(now())
+  name             String
+  Reservation      Reservation[]
+  ReservationNight ReservationNight[]
+}
+
+model Reservation {
+  id               String             @id @default(uuid())
+  createdAt        DateTime           @default(now())
+  room             Room               @relation(fields: [roomId], references: [id])
+  roomId           String
+  start            DateTime
+  end              DateTime
+  totalPrice       Int
+  currency         String
+  amountPaid       Int
+  ReservationNight ReservationNight[]
+}
+
+model ReservationNight {
+  id            String      @id @default(uuid())
+  createdAt     DateTime    @default(now())
+  room          Room        @relation(fields: [roomId], references: [id])
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  roomId        String
+  status        String
+  reservationId String
+  date          DateTime
 }
